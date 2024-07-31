@@ -29,4 +29,9 @@ jobs:
       run: npm install --legacy-peer-deps # Step 3: Perform a clean install of Node.js dependencies.
 
     - name: Run tests
-      run: npm test # Step 4: Run tests using the specified Node.js version.
+      run: npm run test # Step 4: Run tests using the specified Node.js version.
+    # build and test the apps     
+    - name: Build Backend
+      run: |
+        npm run build
+        npm run test

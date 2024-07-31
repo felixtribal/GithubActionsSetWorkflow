@@ -12,7 +12,7 @@ node_modules
 .DS_Store
 .env
 coverage
-jest.config.js
+# jest.config.js
 
 # Built Visual Studio Code Extensions
 *.vsix

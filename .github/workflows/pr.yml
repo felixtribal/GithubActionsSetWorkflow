@@ -2,9 +2,9 @@ name: Node.js CI
 
 on:
   push:
-    branches: [ main, develop ] # Trigger the workflow on every commit to the main branch.
+    branches: [ main ] # Trigger the workflow on every commit to the main branch.
   pull_request:
-    branches: [ main, develop ] # Trigger the workflow on pull requests targeting the main branch.
+    branches: [ main ] # Trigger the workflow on pull requests targeting the main branch.
 
 jobs:
   build:
@@ -13,7 +13,7 @@ jobs:
 
     strategy:
       matrix:
-        node-version: [20.x] # Define a matrix of Node.js versions to test.There would be 3 jobs for 12.x, 14.x, 16.x
+        node-version: [21.x] 
 
     steps:
     - name: Checkout code
@@ -26,7 +26,7 @@ jobs:
         cache: 'npm' # Step 2: Use npm caching for faster dependency installs.
 
     - name: Install Node.js dependencies
-      run: npm --legacy-peer-deps # Step 3: Perform a clean install of Node.js dependencies.
+      run: npm install --legacy-peer-deps # Step 3: Perform a clean install of Node.js dependencies.
 
     - name: Run tests
       run: npm test # Step 4: Run tests using the specified Node.js version.

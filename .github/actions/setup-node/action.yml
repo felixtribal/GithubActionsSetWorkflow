@@ -5,6 +5,11 @@ description: Setup a Node.js environment.
 
 runs:
   using: 'composite'
+  
+  strategy:
+      matrix:
+        node-version: [21x]
+
   steps:
     - name: Use Node.js 
       uses: actions/setup-node@v4

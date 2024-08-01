@@ -2,46 +2,55 @@ name: Node.js CI
 
 on:
   push:
-    branches: [ main ] # Trigger the workflow on every commit to the main branch.
+    branches: [main] # Trigger the workflow on every commit to the main branch.
   pull_request:
-    branches: [ main ] # Trigger the workflow on pull requests targeting the main branch
-
+    branches: [main] # Trigger the workflow on pull requests targeting the main branch
 
 env:
   node-version: 21.x
   working-directory: ./
 
-
-
 jobs:
-  build:
-    name: Builds the app
+  format:
+    name: Run linting & formatting
     runs-on: ubuntu-latest
 
-    strategy:
-      matrix:
-        node-version: [21.x] 
+    concurrency:
+      group: '${{ github.workflow }} @ ${{ github.event.pull_request.head.label || github.head_ref || github.ref }}'
+      cancel-in-progress: true
+
+    defaults:
+      run:
+        working-directory: ${{ env.working-directory }}
+
+    permissions:
+      contents: write
+      pull-requests: write
 
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v2 # Step 1: Check out the source code from the repository.
+      - name: Checkout the Git repository
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.head_ref }}
 
-    - name: Use Node.js ${{ env.node-version }}
-      uses: ./.github/actions/setup-node
-      with:
-        node-version: ${{ env.node-version }}
+      - name: Use Node.js ${{ env.node-version }}
+        uses: ./.github/actions/setup-node
+        with:
+          node-version: ${{ env.node-version }}
 
-    - name: Install Node.js dependencies
-      uses: ./.github/actions/install-node-modules # Step 3: Perform a clean install of Node.js dependencies.
+      - name: Install Node modules
+        uses: ./.github/actions/install-node-modules
 
-    - run: npm run build --if-present
+      - name: Format code
+        uses: ./.github/actions/format-code
+
 
   test:
     name: Run type checking & tests
     runs-on: ubuntu-latest
 
     concurrency:
-      group: '${{ github.workflow }} @ ${{ github.event.pull_request.head.label || github.head_ref || github.ref }} - ${{ matrix.node-version }}'
+      group: "${{ github.workflow }} @ ${{ github.event.pull_request.head.label || github.head_ref || github.ref }} - ${{ matrix.node-version }}"
       cancel-in-progress: true
 
     strategy:
@@ -55,11 +64,33 @@ jobs:
       - name: Use Node.js ${{ env.node-version }}
         uses: ./.github/actions/setup-node
         with:
-            node-version: ${{ env.node-version }}
+          node-version: ${{ env.node-version }}
 
       - name: Install Node modules
         uses: ./.github/actions/install-node-modules
 
-
       - name: Run tests (Jest) NodeJs Backend(expressjs)
         uses: ./.github/actions/run-tests
+
+  build:
+    name: Builds the app
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [21.x]
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2 # Step 1: Check out the source code from the repository.
+
+      - name: Use Node.js ${{ env.node-version }}
+        uses: ./.github/actions/setup-node
+        with:
+          node-version: ${{ env.node-version }}
+
+      - name: Install Node.js dependencies
+        uses: ./.github/actions/install-node-modules # Step 3: Perform a clean install of Node.js dependencies.
+
+      - name: Build App
+        uses: ./.github/actions/build-app

@@ -20,5 +20,5 @@
     "files": true,
     "transpileOnly": true
   },
-  "exclude": ["./coverage", "./dist", "__tests__", "jest.config.js"],
+  "exclude": ["./coverage", "./dist", "__tests__", "jest.config.js"]
 }

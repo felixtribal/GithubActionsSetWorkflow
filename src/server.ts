@@ -1,3 +1,3 @@
-export const Addition = (a:number, b:number) => {
-    return a+b;
-}
+export const Addition = (a: number, b: number) => {
+  return a + b;
+};

@@ -18,7 +18,6 @@
   },
   "ts-node": {
     "files": true,
-    "transpileOnly": true
   },
   "exclude": ["./coverage", "./dist", "__tests__", "jest.config.js"]
 }

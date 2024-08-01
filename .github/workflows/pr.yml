@@ -4,11 +4,18 @@ on:
   push:
     branches: [ main ] # Trigger the workflow on every commit to the main branch.
   pull_request:
-    branches: [ main ] # Trigger the workflow on pull requests targeting the main branch.
+    branches: [ main ] # Trigger the workflow on pull requests targeting the main branch
+
+
+env:
+  node-version: 21.x
+  working-directory: ./
+
+
 
 jobs:
   build:
-
+    name: Builds the app
     runs-on: ubuntu-latest
 
     strategy:
@@ -19,14 +26,15 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v2 # Step 1: Check out the source code from the repository.
 
-    - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v2
+    - name: Use Node.js ${{ env.node-version }}
+      uses: ./.github/actions/setup-node
       with:
-        node-version: ${{ matrix.node-version }}
-        cache: 'npm' # Step 2: Use npm caching for faster dependency installs.
+        node-version: ${{ env.node-version }}
 
     - name: Install Node.js dependencies
       uses: ./.github/actions/install-node-modules # Step 3: Perform a clean install of Node.js dependencies.
+
+    - run: npm run build --if-present
 
   test:
     name: Run type checking & tests
@@ -43,6 +51,11 @@ jobs:
     steps:
       - name: Checkout the Git repository
         uses: actions/checkout@v4
+
+      - name: Use Node.js ${{ env.node-version }}
+        uses: ./.github/actions/setup-node
+        with:
+            node-version: ${{ env.node-version }}
 
       - name: Install Node modules
         uses: ./.github/actions/install-node-modules

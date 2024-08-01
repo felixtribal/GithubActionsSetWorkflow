@@ -44,11 +44,6 @@ jobs:
       - name: Checkout the Git repository
         uses: actions/checkout@v4
 
-      - name: Use Node.js ${{ matrix.node-version }}
-        uses: ./.github/actions/setup-node
-        with:
-          node-version: ${{ matrix.node-version }}
-
       - name: Install Node modules
         uses: ./.github/actions/install-node-modules
 
